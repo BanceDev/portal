@@ -4,3 +4,4 @@ client.make
 server.make
 bin
 obj
+.cache
