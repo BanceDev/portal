@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/BanceDev/portal/blob/main/lobo.png">
+  <img width="64" height="64" src="https://github.com/BanceDev/portal/blob/main/logo.png">
 </p>
 
 ---
