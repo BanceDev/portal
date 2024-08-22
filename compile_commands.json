@@ -1,0 +1,62 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-DDEBUG",
+      "-Isrc/shared",
+      "-g",
+      "-c",
+      "-o",
+      "obj/Debug/client/client.o",
+      "src/client/client.c"
+    ],
+    "directory": "/home/lanceb/portal",
+    "file": "/home/lanceb/portal/src/client/client.c",
+    "output": "/home/lanceb/portal/obj/Debug/client/client.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-DDEBUG",
+      "-Isrc/shared",
+      "-g",
+      "-c",
+      "-o",
+      "obj/Debug/client/socket_util.o",
+      "src/shared/socket_util.c"
+    ],
+    "directory": "/home/lanceb/portal",
+    "file": "/home/lanceb/portal/src/shared/socket_util.c",
+    "output": "/home/lanceb/portal/obj/Debug/client/socket_util.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-DDEBUG",
+      "-Isrc/shared",
+      "-g",
+      "-c",
+      "-o",
+      "obj/Debug/server/server.o",
+      "src/server/server.c"
+    ],
+    "directory": "/home/lanceb/portal",
+    "file": "/home/lanceb/portal/src/server/server.c",
+    "output": "/home/lanceb/portal/obj/Debug/server/server.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-DDEBUG",
+      "-Isrc/shared",
+      "-g",
+      "-c",
+      "-o",
+      "obj/Debug/server/socket_util.o",
+      "src/shared/socket_util.c"
+    ],
+    "directory": "/home/lanceb/portal",
+    "file": "/home/lanceb/portal/src/shared/socket_util.c",
+    "output": "/home/lanceb/portal/obj/Debug/server/socket_util.o"
+  }
+]

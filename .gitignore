@@ -1,4 +1,6 @@
 Makefile
 portal.make
+client.make
+server.make
 bin
 obj
