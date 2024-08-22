@@ -1,4 +1,6 @@
-![Banner](https://github.com/BanceDev/portal/blob/main/logo.png)
+<p align="center">
+  <img src="https://github.com/BanceDev/portal/blob/main/lobo.png">
+</p>
 
 ---
 
