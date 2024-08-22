@@ -19,6 +19,6 @@
 #define SOCKET_UTIL_H
 
 int createTCPIPv4Socket();
-struct sockaddr_in *createIPv4Address(char *ip, unsigned int port);
+struct sockaddr_in createIPv4Address(char *ip, unsigned int port);
 
 #endif // SOCKET_UTIL_H

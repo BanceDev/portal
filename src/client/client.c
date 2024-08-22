@@ -19,18 +19,24 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 
 int main() {
-  // create a socket and save the file descriptor
-  int socket_fd = createTCPIPv4Socket();
+	// create a socket and save the file descriptor
+	int socket_fd = createTCPIPv4Socket();
 
-  // default localhost for now will fix to public ip later
-  struct sockaddr_in *address = createIPv4Address("0.0.0.0", 8675);
-  int result = connect(socket_fd, (struct sockaddr *)address, sizeof(*address));
+	// default localhost for now will fix to public ip later
+	struct sockaddr_in address = createIPv4Address("0.0.0.0", 8675);
+	int result =
+		connect(socket_fd, (struct sockaddr *)&address, sizeof(address));
 
-  if (result == 0) {
-    printf("Connection was sucessful");
-  }
-  return 0;
+	if (result == 0) {
+		printf("Connection was sucessful.\n");
+	}
+
+	char *message = "Hello from client!";
+	send(socket_fd, message, strlen(message), 0);
+
+	return 0;
 }
