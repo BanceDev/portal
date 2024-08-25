@@ -2,7 +2,7 @@ workspace "portal"
 configurations { "Debug", "Release" }
 
 -- Client project
-project "client"
+project "PortalClient"
 kind "ConsoleApp"
 language "C"
 targetdir "bin/%{cfg.buildcfg}/client"
@@ -19,7 +19,7 @@ defines { "NDEBUG" }
 optimize "On"
 
 -- Server project
-project "server"
+project "PortalServer"
 kind "ConsoleApp"
 language "C"
 targetdir "bin/%{cfg.buildcfg}/server"

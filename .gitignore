@@ -1,7 +1,5 @@
 Makefile
-portal.make
-client.make
-server.make
+*.make
 bin
 obj
 .cache
