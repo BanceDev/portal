@@ -1,27 +1,27 @@
 /*
-* Copyright (c) 2024, Lance Borden
-* All rights reserved.
-*
-* This software is licensed under the BSD 3-Clause License.
-* You may obtain a copy of the license at:
-* https://opensource.org/licenses/BSD-3-Clause
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted under the conditions stated in the BSD 3-Clause
-* License.
-*
-* THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+Copyright (c) 2024, Lance Borden
+All rights reserved.
+
+This software is licensed under the BSD 3-Clause License.
+You may obtain a copy of the license at:
+https://opensource.org/licenses/BSD-3-Clause
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted under the conditions stated in the BSD 3-Clause
+License.
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include "socket_util.h"
 #include <arpa/inet.h>
 #include <bits/types/struct_iovec.h>
 #include <netinet/in.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -51,7 +51,6 @@ int main() {
 			}
 			ssize_t amount_sent = send(socket_fd, line, char_count, 0);
 		}
-
 	}
 
 	close(socket_fd);
