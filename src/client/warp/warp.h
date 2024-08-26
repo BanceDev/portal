@@ -284,15 +284,15 @@ void wp_add_cursor_pos_callback(void *cb);
 
 bool wp_key_down(uint32_t key);
 
-bool wp_key(uint32_t key);
+bool wp_key_held(uint32_t key);
 
 bool wp_key_up(uint32_t key);
 
 bool wp_key_changed(uint32_t key);
 
-bool wp_mouse_down(uint32_t button);
+bool wp_mouse_button_down(uint32_t button);
 
-bool wp_mouse_button(uint32_t button);
+bool wp_mouse_button_held(uint32_t button);
 
 bool wp_mouse_button_up(uint32_t button);
 
@@ -583,11 +583,11 @@ bool wp_hovered(vec2s pos, vec2s size);
 
 bool wp_area_hovered(vec2s pos, vec2s size);
 
-wp_cursor_pos_event wp_mouse_move_event();
+wp_cursor_pos_event wp_get_mouse_move_event();
 
 wp_mouse_button_event wp_get_mouse_button_event();
 
-wp_scroll_event wp_mouse_scroll_event();
+wp_scroll_event wp_get_mouse_scroll_event();
 
 wp_key_event wp_get_key_event();
 
@@ -654,4 +654,5 @@ void wp_set_clipboard_text(const char *text);
 char *wp_get_clipboard_text();
 
 void wp_set_no_render(bool no_render);
+
 #endif // WARP_H
