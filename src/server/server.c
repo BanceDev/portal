@@ -16,8 +16,10 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include "socket_util.h"
+#include "users_db.h"
 #include <netinet/in.h>
 #include <pthread.h>
+#include <sqlite3.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -90,6 +92,7 @@ int main() {
 	}
 	int listen_result = listen(server_socket_fd, 10);
 
+	open_database_thread();
 	open_server_connections(server_socket_fd);
 
 	shutdown(server_socket_fd, SHUT_RDWR);

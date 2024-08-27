@@ -44,6 +44,7 @@ targetdir("bin/%{cfg.buildcfg}/server")
 
 files({ "src/server/**.h", "src/server/**.c", "src/shared/**.c", "src/shared/**.h" })
 includedirs({ "src/shared" })
+links({ "sqlite3" })
 
 filter("configurations:Debug")
 defines({ "DEBUG" })

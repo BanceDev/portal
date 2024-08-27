@@ -19,6 +19,9 @@ git clone https://github.com/BanceDev/portal.git
 cd portal
 sh install.sh
 ```
+NOTE: The install.sh script only supports apt, pacman, and yarn package managers. If your package manager is not listed or you are trying to get a build running on windows here is a list of all the dependencies. ```glfw3, cglm, libcclipboard, xcb, glxinfo/glx-utils/mesa-utils```
+
+
 For future compiles just run ```make``` from the root directory. If you change the premake5.lua file rebuild the makefiles with ```premake5 gmake```.
 
 ## Releases

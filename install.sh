@@ -3,17 +3,17 @@
 # Function to install packages using apt (Debian/Ubuntu)
 install_with_apt() {
   sudo apt update
-  sudo apt-get install mesa-utils libglfw3-dev
+  sudo apt-get install mesa-utils libglfw3-dev sqlite3 libsqlite3-dev
 }
 
 # Function to install packages using yum (Red Hat/CentOS)
 install_with_yum() {
-  sudo yum install glx-utils glfw
+  sudo yum install glx-utils glfw-devel sqlite sqlite-devel
 }
 
 # Function to install packages using pacman (Arch Linux)
 install_with_pacman() {
-  sudo pacman -Sy --noconfirm glxinfo glfw
+  sudo pacman -Sy --noconfirm glxinfo glfw sqlite
 }
 
 if [ -f /etc/arch-release ]; then
