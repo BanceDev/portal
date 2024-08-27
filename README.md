@@ -17,8 +17,9 @@ Then clone the repo and build, gmake uses gnu make but premake also supports mak
 ```
 git clone https://github.com/BanceDev/portal.git
 cd portal
-premake5 gmake
+sh install.sh
 ```
+For future compiles just run ```make``` from the root directory. If you change the premake5.lua file rebuild the makefiles with ```premake5 gmake```.
 
 ## Releases
 
