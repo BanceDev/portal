@@ -16,18 +16,47 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include "socket_util.h"
+#include "warp/warp.h"
+#include <GL/gl.h>
+#include <GLFW/glfw3.h>
 #include <arpa/inet.h>
 #include <bits/types/struct_iovec.h>
 #include <netinet/in.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
-int main() {
-	// create a socket and save the file descriptor
-	int socket_fd = createTCPIPv4Socket();
+#define MESSAGE_BUF_SIZE 1024
+#define WIN_INIT_W 1280
+#define WIN_INIT_H 720
+#define GLOBAL_MARGIN 25.0f
+
+// struct to handle global app state
+typedef struct {
+	GLFWwindow *win;
+	int32_t winw, winh;
+
+	wp_input_field message_input;
+	char message_buffer[MESSAGE_BUF_SIZE];
+} state;
+
+// create global singleton of state and socket
+static state s;
+static int socket_fd;
+
+static void resizecb(GLFWwindow *win, int32_t w, int32_t h) {
+	s.winw = w;
+	s.winh = h;
+	wp_resize_display(w, h);
+	glViewport(0, 0, w, h);
+}
+
+static void init_sockets() {
+	socket_fd = createTCPIPv4Socket();
 
 	// default localhost for now will fix to public ip later
 	struct sockaddr_in address = createIPv4Address("0.0.0.0", 8675);
@@ -37,23 +66,111 @@ int main() {
 	if (result == 0) {
 		printf("Connection was sucessful.\n");
 	}
+}
 
-	char *line = NULL;
-	size_t line_size = 0;
+static void init_window() {
+	glfwInit();
 
-	while (true) {
-		ssize_t char_count = getline(&line, &line_size, stdin);
+	s.winw = WIN_INIT_W;
+	s.winh = WIN_INIT_H;
 
-		if (char_count > 0) {
+	s.win = glfwCreateWindow(s.winw, s.winh, "Portal", NULL, NULL);
+	glfwMakeContextCurrent(s.win);
+	glfwSetFramebufferSizeCallback(s.win, resizecb);
+	wp_init_glfw(s.winw, s.winh, s.win);
+}
 
-			if (strcmp(line, "quit\n") == 0) {
-				break;
-			}
-			ssize_t amount_sent = send(socket_fd, line, char_count, 0);
-		}
-	}
+static void init_ui() {
+	memset(s.message_buffer, 0, MESSAGE_BUF_SIZE);
+	s.message_input = (wp_input_field){.width = 400,
+									   .buf = s.message_buffer,
+									   .buf_size = MESSAGE_BUF_SIZE,
+									   .placeholder = (char *)"message"};
+}
 
+static void terminate() {
+	wp_terminate();
 	close(socket_fd);
 
+	glfwDestroyWindow(s.win);
+	glfwTerminate();
+}
+
+static void send_text_message(char *line) {
+
+	size_t char_count = strlen(line);
+	if (char_count > 0) {
+
+		ssize_t amount_sent = send(socket_fd, line, char_count, 0);
+	}
+
+	s.message_input.buf[0] = '\0';
+}
+
+static void render_main_screen() {
+	// message input field
+
+	{
+		wp_text("Send a message:");
+
+		wp_next_line();
+		wp_element_props props = wp_get_theme().inputfield_props;
+		props.padding = 15;
+		props.border_width = 0;
+		props.color = WP_BLACK;
+		props.corner_radius = 11;
+		props.text_color = WP_WHITE;
+		props.border_width = 1.0f;
+		props.border_color = WP_WHITE;
+		props.corner_radius = 2.5f;
+		props.margin_bottom = 10.0f;
+		wp_push_style_props(props);
+		wp_input_text(&s.message_input);
+		wp_pop_style_props();
+	}
+
+	// send button
+	{
+		const float width = 150.0f;
+
+		wp_element_props props = wp_get_theme().button_props;
+		props.border_width = 0.0f;
+		props.margin_top = 0.0f;
+		props.corner_radius = 4.0f;
+		wp_push_style_props(props);
+
+		wp_set_line_should_overflow(false);
+		if (wp_button_fixed("send", width, -1) == WP_CLICKED) {
+			send_text_message(s.message_input.buf);
+		}
+		wp_set_line_should_overflow(true);
+		wp_pop_style_props();
+	}
+}
+
+int main() {
+	init_window();
+	init_ui();
+	init_sockets();
+
+	while (!glfwWindowShouldClose(s.win)) {
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		wp_begin();
+
+		wp_div_begin(((vec2s){GLOBAL_MARGIN, GLOBAL_MARGIN}),
+					 ((vec2s){s.winw - GLOBAL_MARGIN * 2.0f,
+							  s.winh - GLOBAL_MARGIN * 2.0f}),
+					 true);
+
+		render_main_screen();
+
+		wp_div_end();
+		wp_end();
+
+		glfwPollEvents();
+		glfwSwapBuffers(s.win);
+	}
+	terminate();
 	return 0;
 }

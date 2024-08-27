@@ -1,20 +1,19 @@
 #!/bin/sh
 
-
 # Function to install packages using apt (Debian/Ubuntu)
 install_with_apt() {
-    sudo apt update
-    sudo apt-get install mesa-utils
+  sudo apt update
+  sudo apt-get install mesa-utils libglfw3-dev
 }
 
 # Function to install packages using yum (Red Hat/CentOS)
 install_with_yum() {
-  sudo yum install glx-utils
+  sudo yum install glx-utils glfw
 }
 
 # Function to install packages using pacman (Arch Linux)
 install_with_pacman() {
-    sudo pacman -Sy --noconfirm glxinfo
+  sudo pacman -Sy --noconfirm glxinfo glfw
 }
 
 if [ -f /etc/arch-release ]; then
@@ -44,33 +43,34 @@ fi
 echo "OpenGL $CURRENT_VERSION is sufficient."
 
 if ! pkg-config cglm; then
-echo "cglm not found on the system"
-echo "building cglm"
-git clone https://github.com/recp/cglm
-cd cglm
-mkdir build
-cd build
-cmake ..
-make -j$(nproc)
-sudo make install
-cd ../../
-rm -rf cglm
+  echo "cglm not found on the system"
+  echo "building cglm"
+  git clone https://github.com/recp/cglm
+  cd cglm
+  mkdir build
+  cd build
+  cmake ..
+  make -j$(nproc)
+  sudo make install
+  cd ../../
+  rm -rf cglm
 fi
 
 if ! pkg-config libclipboard; then
-echo "libclipboard not found on the system"
-echo "building libclipboard"
-git clone https://github.com/jtanx/libclipboard
-cd libclipboard
-cmake .
-make -j$(nproc)
-sudo make install
-cd ..
-rm -rf libclipboard
+  echo "libclipboard not found on the system"
+  echo "building libclipboard"
+  git clone https://github.com/jtanx/libclipboard
+  cd libclipboard
+  cmake .
+  make -j$(nproc)
+  sudo make install
+  cd ..
+  rm -rf libclipboard
 fi
 
 # add actual premake build and compile here later
-make -j$(nproc)
+premake5 gmake
+make
 cp -rf ./.portal ~/
 
 echo "====================="

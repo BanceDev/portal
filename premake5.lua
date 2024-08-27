@@ -23,7 +23,7 @@ includedirs({
 	"deps/stb_image_resize",
 	"deps/stb_truetype",
 })
-links({ "glfw", "clipboard", "cglm", "m", "xcb" })
+links({ "GL", "glfw", "clipboard", "cglm", "m", "xcb" })
 defines({ "WP_GLFW" })
 optimize("Speed")
 buildoptions({ "-ffast-math" })

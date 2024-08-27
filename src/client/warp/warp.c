@@ -2036,7 +2036,7 @@ void wp_init_glfw(uint32_t display_width, uint32_t display_height,
 				  void *glfw_window) {
 	setlocale(LC_ALL, "");
 	if (!glfwInit()) {
-		WP_ERROR("Trying to initialize Leif with GLFW without initializing "
+		WP_ERROR("Trying to initialize warp with GLFW without initializing "
 				 "GLFW first.");
 		return;
 	}
@@ -2090,7 +2090,7 @@ void wp_init_glfw(uint32_t display_width, uint32_t display_height,
 void wp_terminate() { wp_free_font(&state.theme.font); }
 
 wp_theme wp_default_theme() {
-	// The default theme of Leif
+	// The default theme of warp
 	wp_theme theme = {0};
 	theme.div_props = (wp_element_props){
 		.color = (wp_color){45, 45, 45, 255},
@@ -2183,7 +2183,7 @@ wp_theme wp_default_theme() {
 											   .corner_radius = 0,
 											   .hover_color = WP_NO_COLOR,
 											   .hover_text_color = WP_NO_COLOR};
-	theme.font = wp_load_font_asset("inter", "ttf", 24);
+	theme.font = wp_load_font_asset("ubuntu", "ttf", 24);
 
 	theme.div_scroll_max_velocity = 100.0f;
 	theme.div_scroll_velocity_deceleration = 0.92;
@@ -2622,16 +2622,16 @@ void wp_free_font(wp_font *font) {
 
 wp_font wp_load_font_asset(const char *asset_name, const char *file_extension,
 						   uint32_t font_size) {
-	char leif_dir[strlen(getenv(HOMEDIR)) + strlen("/.leif")];
-	memset(leif_dir, 0, sizeof(leif_dir));
-	strcat(leif_dir, getenv(HOMEDIR));
-	strcat(leif_dir, "/.leif");
+	char warp_dir[strlen(getenv(HOMEDIR)) + strlen("/.portal") + 1];
+	memset(warp_dir, 0, sizeof(warp_dir));
+	strcat(warp_dir, getenv(HOMEDIR));
+	strcat(warp_dir, "/.portal");
 
-	char path[strlen(leif_dir) + strlen("/assets/fonts/") + strlen(asset_name) +
-			  strlen(".") + strlen(file_extension)];
+	char path[strlen(warp_dir) + strlen("/assets/fonts/") + strlen(asset_name) +
+			  strlen(".") + strlen(file_extension) + 1];
 
 	memset(path, 0, sizeof(path));
-	strcat(path, leif_dir);
+	strcat(path, warp_dir);
 	strcat(path, "/assets/fonts/");
 	strcat(path, asset_name);
 	strcat(path, ".");
@@ -2642,15 +2642,15 @@ wp_font wp_load_font_asset(const char *asset_name, const char *file_extension,
 
 wp_texture wp_load_texture_asset(const char *asset_name,
 								 const char *file_extension) {
-	char leif_dir[strlen(getenv(HOMEDIR)) + strlen("/.leif")];
-	memset(leif_dir, 0, sizeof(leif_dir));
-	strcat(leif_dir, getenv(HOMEDIR));
-	strcat(leif_dir, "/.leif");
+	char warp_dir[strlen(getenv(HOMEDIR)) + strlen("/.portal") + 1];
+	memset(warp_dir, 0, sizeof(warp_dir));
+	strcat(warp_dir, getenv(HOMEDIR));
+	strcat(warp_dir, "/.portal");
 
-	char path[strlen(leif_dir) + strlen("/assets/textures/") +
-			  strlen(asset_name) + strlen(".") + strlen(file_extension)];
+	char path[strlen(warp_dir) + strlen("/assets/textures/") +
+			  strlen(asset_name) + strlen(".") + strlen(file_extension) + 1];
 	memset(path, 0, sizeof(path));
-	strcat(path, leif_dir);
+	strcat(path, warp_dir);
 	strcat(path, "/assets/textures/");
 	strcat(path, asset_name);
 	strcat(path, ".");
