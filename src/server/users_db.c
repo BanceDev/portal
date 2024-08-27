@@ -15,7 +15,6 @@ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-#include <openssl/sha.h>
 #include <pthread.h>
 #include <sqlite3.h>
 #include <stdio.h>

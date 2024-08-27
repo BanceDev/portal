@@ -17,6 +17,7 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "socket_util.h"
 #include "users_db.h"
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <sqlite3.h>
@@ -87,8 +88,15 @@ int main() {
 	int bind_result = bind(server_socket_fd, (struct sockaddr *)&server_address,
 						   sizeof(server_address));
 
+	char ip_str[INET_ADDRSTRLEN];
+	if (inet_ntop(AF_INET, (void *)&(server_address.sin_addr), ip_str,
+				  sizeof(ip_str)) == NULL) {
+		printf("Error in inet_ntop");
+		return 1;
+	}
+
 	if (bind_result == 0) {
-		printf("Server socket bound successfully.\n");
+		printf("Server socket bound successfully at: %s:8675\n", ip_str);
 	}
 	int listen_result = listen(server_socket_fd, 10);
 

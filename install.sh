@@ -2,13 +2,18 @@
 
 # Function to install packages using apt (Debian/Ubuntu)
 install_with_apt() {
-  sudo apt update
-  sudo apt-get install mesa-utils libglfw3-dev sqlite3 libsqlite3-dev
+  sudo apt-get update
+  sudo apt-get install -y mesa-utils libglfw3-dev sqlite3 libsqlite3-dev
 }
 
 # Function to install packages using yum (Red Hat/CentOS)
 install_with_yum() {
-  sudo yum install glx-utils glfw-devel sqlite sqlite-devel
+  sudo yum install -y glx-utils glfw-devel sqlite sqlite-devel
+}
+
+# New package manager used in Fedora
+install_with_dnf() {
+  sudo dnf install -y glx-utils glfw-devel sqlite sqlite-devel
 }
 
 # Function to install packages using pacman (Arch Linux)
@@ -21,26 +26,15 @@ if [ -f /etc/arch-release ]; then
 elif [ -f /etc/debian_version ]; then
   install_with_apt
 elif [ -f /etc/redhat-release ] || [ -f /etc/centos-release ]; then
-  install_with_yum
+  if command -v dnf >/dev/null 2>&1; then
+    install_with_dnf
+  else
+    install_with_yum
+  fi
 else
   echo "Your linux distro is not supported currently."
   echo "You need to manually install those packages: exiftool, jq, glfw"
 fi
-
-get_opengl_version() {
-  glxinfo | grep "OpenGL version string" | awk '{print $4}'
-}
-
-REQUIRED_VERSION="4.5"
-CURRENT_VERSION=$(get_opengl_version)
-
-if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
-  echo "Your OpenGL version is $CURRENT_VERSION. OpenGL version $REQUIRED_VERSION or higher is required."
-  echo "Please update your OpenGL drivers."
-  exit 1
-fi
-
-echo "OpenGL $CURRENT_VERSION is sufficient."
 
 if ! pkg-config cglm; then
   echo "cglm not found on the system"
@@ -63,12 +57,23 @@ if ! pkg-config libclipboard; then
   cd libclipboard
   cmake .
   make -j$(nproc)
-  sudo make install
+  sudo install
   cd ..
   rm -rf libclipboard
 fi
 
-# add actual premake build and compile here later
+PREMAKE_VERSION="5.0.0-beta2"
+OS="linux"
+
+echo "downloading premake $PREMAKE_VERSION"
+wget -q https://github.com/premake/premake-core/releases/download/v${PREMAKE_VERSION}/premake-${PREMAKE_VERSION}-${OS}.tar.gz -O premake.tar.gz
+echo "extracting premake"
+tar -xzf premake.tar.gz
+echo "installing premake"
+sudo mv premake5 example.so libluasocket.so /usr/bin
+sudo chmod +x /usr/bin/premake5
+rm premake.tar.gz
+
 premake5 gmake
 make
 cp -rf ./.portal ~/

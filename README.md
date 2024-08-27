@@ -10,19 +10,30 @@ Portal is an open source group chat application designed with developers and cre
 
 ## Compiling
 
-First install [premake5](https://premake.github.io/download)
-
-Then clone the repo and build, gmake uses gnu make but premake also supports making visual studio projects if you prefer that. Check out the [premake docs](https://premake.github.io/docs/) for more information.
+Clone the repo and run the install script.
 
 ```
 git clone https://github.com/BanceDev/portal.git
 cd portal
 sh install.sh
 ```
-NOTE: The install.sh script only supports apt, pacman, and yum package managers. If your package manager is not listed or you are trying to get a build running on windows here is a list of all the dependencies. ```glfw3, cglm, libcclipboard, xcb, sqlite3, glxinfo/glx-utils/mesa-utils```
+NOTE: The install.sh script only supports apt, pacman, dnf, and yum package managers. If your package manager is not listed or you are trying to get a build running on windows here is a list of all the dependencies. ```glfw3, cglm, libcclipboard, xcb, sqlite3, glxinfo/glx-utils/mesa-utils```
 
 
 For future compiles just run ```make``` from the root directory. If you change the premake5.lua file rebuild the makefiles with ```premake5 gmake```.
+
+## Running the Server From Docker
+
+If you want to run your own instance of the portal server using Docker its quite simple.
+
+First just install [Docker](https://www.docker.com/) for your operating system.
+
+Then run the following commands to build and run:
+
+```
+docker build -t portal-server .
+docker run -it --rm portal-server
+```
 
 ## Releases
 
