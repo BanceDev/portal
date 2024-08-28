@@ -3,22 +3,22 @@
 # Function to install packages using apt (Debian/Ubuntu)
 install_with_apt() {
   sudo apt-get update
-  sudo apt-get install -y mesa-utils libglfw3-dev sqlite3 libsqlite3-dev
+  sudo apt-get install -y mesa-utils libglfw3-dev sqlite3 libsqlite3-dev libssl-dev
 }
 
 # Function to install packages using yum (Red Hat/CentOS)
 install_with_yum() {
-  sudo yum install -y glx-utils glfw-devel sqlite sqlite-devel
+  sudo yum install -y glx-utils glfw-devel sqlite sqlite-devel openssl-devel
 }
 
 # New package manager used in Fedora
 install_with_dnf() {
-  sudo dnf install -y glx-utils glfw-devel sqlite sqlite-devel
+  sudo dnf install -y glx-utils glfw-devel sqlite sqlite-devel openssl-devel
 }
 
 # Function to install packages using pacman (Arch Linux)
 install_with_pacman() {
-  sudo pacman -Sy --noconfirm glxinfo glfw sqlite
+  sudo pacman -Sy --noconfirm glxinfo glfw sqlite openssl
 }
 
 if [ -f /etc/arch-release ]; then

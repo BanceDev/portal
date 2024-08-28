@@ -1,7 +1,7 @@
 #!/bin/sh
 
 apt-get update
-apt-get install -y sqlite3 libsqlite3-dev
+apt-get install -y sqlite3 libsqlite3-dev openssl libssl-dev
 
 PREMAKE_VERSION="5.0.0-beta2"
 OS="linux"
