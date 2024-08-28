@@ -23,6 +23,7 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <sqlite3.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -55,16 +56,16 @@ static void *connection_thread_main(void *arg) {
 	int fd = *(int *)arg;
 	char buffer[1024];
 	while (true) {
+		packet_t recv_packet;
+		int rc = portal_recv_packet(fd, &recv_packet);
 
-		ssize_t amount_recieved = recv(fd, buffer, 1024, 0);
-
-		if (amount_recieved > 0) {
-			buffer[amount_recieved] = 0; // null termination
-			printf("Client Message: %s\n", buffer);
+		if (rc == PORTAL_FAIL) {
+			break;
 		}
 
-		if (amount_recieved == 0) {
-			break;
+		// TODO: make this a switch statement for all packet types
+		if (strcmp(recv_packet.header.type, "MSG") == 0) {
+			portal_handle_msg(&recv_packet);
 		}
 	}
 

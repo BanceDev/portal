@@ -96,12 +96,24 @@ static void terminate() {
 	glfwTerminate();
 }
 
+// TODO: prevent client from sending message if size is over 1024
+// makes max message size 1024-16 (for header and size bytes)
 static void send_text_message(char *line) {
 
+	// null terminator char is handled server side
 	size_t char_count = strlen(line);
 	if (char_count > 0) {
 
-		ssize_t amount_sent = send(socket_fd, line, char_count, 0);
+		packet_t msg_packet;
+		msg_packet.header.id = 0;
+		strncpy(msg_packet.header.type, "MSG", 4);
+		msg_packet.data_size = char_count;
+		msg_packet.data = malloc(char_count);
+		memcpy(msg_packet.data, line, char_count);
+
+		portal_send_packet(socket_fd, &msg_packet);
+
+		free(msg_packet.data);
 	}
 
 	s.message_input.buf[0] = '\0';
