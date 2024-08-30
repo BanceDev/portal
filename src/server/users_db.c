@@ -15,6 +15,7 @@ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include "users_db.h"
 #include <pthread.h>
 #include <sqlite3.h>
 #include <stdio.h>
@@ -37,8 +38,9 @@ static int create_user_table(sqlite3 *db) {
 	return SQLITE_OK;
 }
 
-static int add_user(sqlite3 *db, const char *email, const char *usrname,
-					const char *psswd_hash) {
+// the user_t coming in should be empty to recieve data
+static int create_user(sqlite3 *db, user_t *usr, const char *email,
+					   const char *usrname, const char *psswd_hash) {
 	sqlite3_stmt *stmt;
 	const char *sql =
 		"INSERT INTO users (email, username, password) VALUES (?, ?, ?);";
@@ -63,6 +65,90 @@ static int add_user(sqlite3 *db, const char *email, const char *usrname,
 
 	sqlite3_finalize(stmt);
 	return SQLITE_OK;
+}
+
+// the user_t should be empty to recieve data
+static int read_user(sqlite3 *db, user_t *usr, const int id) {
+	sqlite3_stmt *stmt;
+	const char *sql =
+		"SELECT id, email, username, password FROM users WHERE id = ?;";
+
+	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	if (rc != SQLITE_OK) {
+		printf("Error preparing read user statement: %s\n", sqlite3_errmsg(db));
+		return rc;
+	}
+
+	// sets id for query based on function parameter
+	sqlite3_bind_int(stmt, 1, id);
+
+	rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		usr->id = sqlite3_column_int(stmt, 0);
+		usr->email = sqlite3_column_text(stmt, 1);
+		usr->username = sqlite3_column_text(stmt, 2);
+		usr->psswd_hash = sqlite3_column_text(stmt, 3);
+	} else if (rc == SQLITE_DONE) {
+		printf("No user found with id: %d\n", id);
+	} else {
+		printf("Error execution of read user statement failed: %s\n",
+			   sqlite3_errmsg(db));
+	}
+
+	sqlite3_finalize(stmt);
+	return rc;
+}
+
+// the usr coming in should have the data to be updated
+static int update_user(sqlite3 *db, user_t *usr) {
+	sqlite3_stmt *stmt;
+	const char *sql =
+		"UPDATE users SET email = ?, username = ?, password = ? WHERE id = ?;";
+
+	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	if (rc != SQLITE_OK) {
+		printf("Error preparing update user statement: %s\n",
+			   sqlite3_errmsg(db));
+		return rc;
+	}
+
+	sqlite3_bind_text(stmt, 1, (const char *)usr->email, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, (const char *)usr->username, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 3, (const char *)usr->psswd_hash, -1,
+					  SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 4, usr->id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		printf("Error execution of update user statement failed: %s\n",
+			   sqlite3_errmsg(db));
+	}
+
+	sqlite3_finalize(stmt);
+	return rc;
+}
+
+static int delete_user(sqlite3 *db, const int id) {
+	sqlite3_stmt *stmt;
+	const char *sql = "DELETE FROM users WHERE id = ?;";
+
+	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	if (rc != SQLITE_OK) {
+		printf("Error preparing delete user statement: %s\n",
+			   sqlite3_errmsg(db));
+		return rc;
+	}
+
+	sqlite3_bind_int(stmt, 1, id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		printf("Error execution of delete user statement failed: %s\n",
+			   sqlite3_errmsg(db));
+	}
+
+	sqlite3_finalize(stmt);
+	return rc;
 }
 
 static void *database_thread_main(void *arg) {

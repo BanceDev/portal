@@ -18,6 +18,15 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #ifndef USERS_DB_H
 #define USERS_DB_H
 
+#include <stdint.h>
+
+typedef struct {
+    uint32_t id;
+    const unsigned char* email;
+    const unsigned char* username;
+    const unsigned char* psswd_hash;
+} user_t;
+
 void open_database_thread();
 
 #endif // USERS_DB_H
