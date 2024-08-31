@@ -15,19 +15,11 @@ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-#ifndef USERS_DB_H
-#define USERS_DB_H
+#ifndef CRYPTO_H
+#define CRYPTO_H
 
-#include <stdint.h>
+#include "users_db.h"
 
-typedef struct {
-    uint32_t id;
-    const unsigned char* email;
-    const unsigned char* username;
-    unsigned char psswd_hash[128];
-    unsigned char psswd_salt[16] ;
-} user_t;
+int crypto_generate_hash_with_salt(user_t *usr, const char *psswd);
 
-void open_database_thread();
-
-#endif // USERS_DB_H
+#endif // CRYPTO_H

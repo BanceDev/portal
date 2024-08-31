@@ -15,6 +15,7 @@ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include "crypto.h"
 #include "socket_util.h"
 #include "users_db.h"
 #include <arpa/inet.h>
@@ -23,6 +24,7 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #include <sqlite3.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -67,6 +69,8 @@ static void *connection_thread_main(void *arg) {
 		if (strcmp(recv_packet.header.type, "MSG") == 0) {
 			portal_handle_msg(&recv_packet);
 		}
+
+		free(recv_packet.data);
 	}
 
 	close(fd);
