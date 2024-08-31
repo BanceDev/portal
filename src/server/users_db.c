@@ -38,9 +38,7 @@ static int create_user_table(sqlite3 *db) {
 	return SQLITE_OK;
 }
 
-// the user_t coming in should be empty to recieve data
-static int create_user(sqlite3 *db, user_t *usr, const char *email,
-					   const char *usrname, const char *psswd_hash) {
+static int create_user(sqlite3 *db, user_t *usr) {
 	sqlite3_stmt *stmt;
 	const char *sql =
 		"INSERT INTO users (email, username, password) VALUES (?, ?, ?);";
@@ -51,9 +49,9 @@ static int create_user(sqlite3 *db, user_t *usr, const char *email,
 		return rc;
 	}
 
-	sqlite3_bind_text(stmt, 1, email, -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, usrname, -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 3, psswd_hash, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 1, (const char *)usr->email, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, (const char *)usr->username, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 3, (const char *)usr->username, -1, SQLITE_STATIC);
 
 	rc = sqlite3_step(stmt);
 	if (rc != SQLITE_DONE) {
@@ -62,6 +60,8 @@ static int create_user(sqlite3 *db, user_t *usr, const char *email,
 		sqlite3_finalize(stmt);
 		return rc;
 	}
+
+	usr->id = sqlite3_last_insert_rowid(db);
 
 	sqlite3_finalize(stmt);
 	return SQLITE_OK;
