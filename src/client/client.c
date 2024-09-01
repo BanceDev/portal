@@ -35,11 +35,19 @@ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #define WIN_INIT_H 720
 #define GLOBAL_MARGIN 25.0f
 
+enum screens { LOGIN_SCREEN, MAIN_SCREEN };
+
 // struct to handle global app state
 typedef struct {
 	GLFWwindow *win;
 	int32_t winw, winh;
+	// -- login window --
+	wp_input_field username_input;
+	wp_input_field psswd_input;
+	char username_buffer[MESSAGE_BUF_SIZE];
+	char psswd_buffer[MESSAGE_BUF_SIZE];
 
+	// -- main window --
 	wp_input_field message_input;
 	char message_buffer[MESSAGE_BUF_SIZE];
 } state;
@@ -81,11 +89,22 @@ static void init_window() {
 }
 
 static void init_ui() {
+	memset(s.username_buffer, 0, MESSAGE_BUF_SIZE);
+	memset(s.psswd_buffer, 0, MESSAGE_BUF_SIZE);
 	memset(s.message_buffer, 0, MESSAGE_BUF_SIZE);
+
 	s.message_input = (wp_input_field){.width = 400,
 									   .buf = s.message_buffer,
 									   .buf_size = MESSAGE_BUF_SIZE,
 									   .placeholder = (char *)"message"};
+	s.username_input = (wp_input_field){.width = 180,
+										.buf = s.username_buffer,
+										.buf_size = MESSAGE_BUF_SIZE,
+										.placeholder = (char *)"username"};
+	s.psswd_input = (wp_input_field){.width = 180,
+									 .buf = s.psswd_buffer,
+									 .buf_size = MESSAGE_BUF_SIZE,
+									 .placeholder = (char *)"password"};
 }
 
 static void terminate() {
@@ -117,6 +136,74 @@ static void send_text_message(char *line) {
 	}
 
 	s.message_input.buf[0] = '\0';
+}
+
+static void render_login_screen() {
+	const char *btn_text = "Login";
+
+	// draw the box
+	{
+		wp_element_props props = wp_get_theme().div_props;
+		props.corner_radius = 10.0f;
+		wp_push_style_props(props);
+
+		float width = 400.0f, height = 400.0f;
+		wp_div_begin(
+			((vec2s){(s.winw - width) / 2.0f, (s.winh - height) / 2.0f}),
+			((vec2s){width, height}), false);
+		wp_pop_style_props();
+	}
+
+	// draw the input fields
+	{
+		const float width = 180.0f;
+
+		wp_set_ptr_y_absolute(
+			(s.winh - (wp_button_dimension("Login").y +
+					   wp_button_dimension("Login").y + 50.0f * 2.0f + 15.0f)) /
+			2.0f);
+		wp_element_props props = wp_get_theme().inputfield_props;
+		props.padding = 15;
+		props.border_width = 0;
+		props.color = WP_BLACK;
+		props.corner_radius = 11;
+		props.text_color = WP_WHITE;
+		props.border_width = 0.0f;
+		props.corner_radius = 2.5f;
+		props.margin_bottom = 10.0f;
+
+		wp_push_style_props(props);
+		wp_set_ptr_x_absolute((s.winw - (width + props.padding * 2.0f)) / 2.0f);
+		wp_input_text(&s.username_input);
+		wp_next_line();
+		wp_set_ptr_x_absolute((s.winw - (width + props.padding * 2.0f)) / 2.0f);
+		wp_input_text(&s.psswd_input);
+		wp_pop_style_props();
+	}
+
+	wp_next_line();
+
+	// login button
+	{
+		const float width = 180.0f;
+
+		wp_element_props props = wp_get_theme().button_props;
+		props.margin_left = 0.0f;
+		props.margin_top = 15.0f;
+		props.border_width = 0.0f;
+		props.corner_radius = 9.0f;
+		props.text_color = WP_WHITE;
+		props.color = (wp_color){90, 90, 90, 255};
+
+		wp_push_style_props(props);
+		wp_set_ptr_x_absolute((s.winw - (width + props.padding * 2.0f)) / 2.0f);
+		if (wp_button_fixed(btn_text, width, -1) == WP_CLICKED) {
+			// login later
+		}
+		wp_pop_style_props();
+	}
+
+	wp_div_end();
 }
 
 static void render_main_screen() {
@@ -165,17 +252,23 @@ int main() {
 	init_ui();
 	init_sockets();
 
+	int screen = LOGIN_SCREEN;
 	while (!glfwWindowShouldClose(s.win)) {
 		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		wp_begin();
 
-		wp_div_begin(((vec2s){GLOBAL_MARGIN, GLOBAL_MARGIN}),
-					 ((vec2s){s.winw - GLOBAL_MARGIN * 2.0f,
-							  s.winh - GLOBAL_MARGIN * 2.0f}),
-					 true);
-
-		render_main_screen();
+		switch (screen) {
+		case LOGIN_SCREEN:
+			render_login_screen();
+			break;
+		case MAIN_SCREEN:
+			render_main_screen();
+			break;
+		default:
+			break;
+		}
 
 		wp_div_end();
 		wp_end();

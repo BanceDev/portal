@@ -87,7 +87,6 @@ static int read_user(sqlite3 *db, user_t *usr, const int id) {
 		usr->id = sqlite3_column_int(stmt, 0);
 		usr->email = sqlite3_column_text(stmt, 1);
 		usr->username = sqlite3_column_text(stmt, 2);
-		usr->psswd_hash = sqlite3_column_text(stmt, 3);
 	} else if (rc == SQLITE_DONE) {
 		printf("No user found with id: %d\n", id);
 	} else {
